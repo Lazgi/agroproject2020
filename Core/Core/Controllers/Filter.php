@@ -10,11 +10,18 @@
 
 		public function parse() {
 
-			if (preg_match_all("/\/(\w+)(?:\?(.*))?/", $this->requ, $m)) {
-				$this->filename = $m['1']['0'];
+			if (preg_match("/\/(css|js)\/(\w+)\.(css|js)(?:\?(.*))?/", $this->requ, $m)) {
+				if ($m['1'] !== $m['3'])
+					return;
+				$this->filename = $m['2'];
+				$this->filetype = $m['1'];
+				if (!empty($m['2']))
+					$this->getParams = $this->parseParams($m['2']);
+			} elseif (preg_match("/\/(\w+)(?:\?(.*))?/", $this->requ, $m)) {
+				$this->filename = $m['1'];
 				$this->filetype = "html";
 				if (!empty($m['2']))
-					$this->getParams = $this->parseParams($m['2']['0']);
+					$this->getParams = $this->parseParams($m['2']);
 			}
 
 		}

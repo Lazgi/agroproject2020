@@ -8,4 +8,4 @@
 	$_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] === "/" ? "/home" : $_SERVER['REQUEST_URI'];
 	$c = new c(getallheaders(), $_SERVER, $_GET, $_COOKIE);
 	$x = $c->getController();
-	echo $x->head() . $x->body() . $x->close();
+	echo $x->build();

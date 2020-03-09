@@ -7,14 +7,16 @@
 		public function __construct(Filter $filter) {
 			$this->filter = $filter;
 			$this->selFile = __DIR__;
+			$this->p404 = realpath(dirname(dirname($this->selFile)) . "/corefiles/404.php");
 			switch ($this->filter->filetype) {
 				case "html":
 					$this->content = realpath(dirname(dirname($this->selFile)) . "/corefiles/{$this->filter->filename}.php");
-					$this->p404 = realpath(dirname(dirname($this->selFile)) . "/corefiles/404.php");
 					break;
 				case "css":
+					$this->content = realpath(dirname(dirname($this->selFile)) . "/styles/index.php");
 					break;
 				case "js":
+					$this->content = realpath(dirname(dirname($this->selFile)) . "/scripts/index.php");
 					break;
 			}
 			$this->toGET();

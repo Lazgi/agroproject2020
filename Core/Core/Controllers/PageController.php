@@ -4,13 +4,22 @@
 
 	class PageController {
 
-		public function __construct($meta, $style, $script, $title, $body) {
+		public function __construct($meta, $style, $script, $title, $body, Filter $filter) {
 
 			$this->meta = $meta;
 			$this->style = $style;
 			$this->script = $script;
 			$this->title = $title;
 			$this->body = $body;
+			$this->filter = $filter;
+
+		}
+
+		public function build() {
+
+			if ($this->filter->filetype !== "html")
+				return $this->body();
+			return $this->head() . $this->body() . $this->close();
 
 		}
 
@@ -46,14 +55,14 @@
 		private function parseCSS() {
 			$stringCSS = "";
 			foreach ($this->style as $q => $w)
-				$stringCSS .= "\n<link rel=\"stylesheet\" href=\"{$w}\" />";
+				$stringCSS .= "\n<link rel=\"stylesheet\" href=\"/css/{$w}.css\" />";
 			return substr($stringCSS, 1);
 		}
 
 		private function parseJS() {
 			$stringJS = "";
 			foreach ($this->style as $q => $w)
-				$stringJS .= "\n<script src=\"{$w}\"></script>";
+				$stringJS .= "\n<script src=\"/js/{$w}.js\"></script>";
 			return substr($stringJS, 1);
 		}
 	}
