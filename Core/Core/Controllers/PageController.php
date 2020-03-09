@@ -4,14 +4,14 @@
 
 	class PageController {
 
-		public function __construct($meta, $style, $script, $title, $body, Filter $filter) {
+		public function __construct($meta, $style, $script, $title, FileController $body) {
 
 			$this->meta = $meta;
 			$this->style = $style;
 			$this->script = $script;
 			$this->title = $title;
-			$this->body = $body;
-			$this->filter = $filter;
+			$this->body = $body->getFile();
+			$this->filter = $body->filter;
 
 		}
 
@@ -24,7 +24,7 @@
 		}
 
 		public function head(){
-			$filter = new Filter("/head");
+			$filter = new Filter("/head", true);
 			$filter->parse();
 			$file = (new FileController($filter))->getFile();
 			$file = str_replace("{{meta}}", $this->parseMeta(), $file);
@@ -38,7 +38,7 @@
 		}
 		
 		public function close(){
-			$filter = new Filter("/close");
+			$filter = new Filter("/close", true);
 			$filter->parse();
 			$file = (new FileController($filter))->getFile();
 			$file = str_replace("{{js}}", $this->parseJS(), $file);

@@ -4,11 +4,14 @@
 
 	class Filter {
 
-		public function __construct($requ) {
+		public function __construct($requ, $secreted = false) {
 			$this->requ = $requ;
+			$this->sc = $secreted;
 		}
 
 		public function parse() {
+			if (preg_match("/\/(close|head|404)(?:\?(.*))?/", $this->requ, $m) && !$this->sc)
+				return;
 
 			if (preg_match("/\/(css|js)\/(\w+)\.(css|js)(?:\?(.*))?/", $this->requ, $m)) {
 				if ($m['1'] !== $m['3'])

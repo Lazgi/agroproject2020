@@ -19,12 +19,7 @@
 			$page = new FileController($request);
 			return new PageController([
 				"charset" => "UTF-8"
-			], [$request->filename], [$request->filename], "Ready Page", $page->getFile(), $request);
-			/*
-Lampocka
-			*/
-
+			], [$request->filename], [$request->filename], "Ready Page", $page);
 
 		}
-
 	}
