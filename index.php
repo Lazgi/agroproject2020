@@ -1,6 +1,5 @@
 <?php
-	
-	// header("Content-Type: application/json");
+
 	require "Core/core.php";
 
 	use MDReal\Agro\Controllers\Controller as c;

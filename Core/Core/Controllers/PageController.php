@@ -4,7 +4,7 @@
 
 	class PageController {
 
-		public function __construct($meta, $style, $script, $title, FileController $body) {
+		public function __construct(array $meta, array $style, array $script, string $title, FileController $body) {
 
 			$this->meta = $meta;
 			$this->style = $style;
@@ -17,8 +17,14 @@
 
 		public function build() {
 
-			if ($this->filter->filetype !== "html")
-				return $this->body();
+			if ($this->filter->filetype !== "html") {
+				$page = $this->body();
+				if ($page === 404) {
+					$file = (new FileController((new Filter("/404", true))->parse()))->getFile();
+					return $this->head() . $file . $this->close();
+				}
+				return $page;
+			}
 			return $this->head() . $this->body() . $this->close();
 
 		}
@@ -48,21 +54,21 @@
 		private function parseMeta() {
 			$stringMeta = "";
 			foreach ($this->meta as $q => $w)
-				$stringMeta .= "\n<meta name=\"{$q}\" content=\"{$w}\" />";
-			return substr($stringMeta, 1);
+				$stringMeta .= "\n\t<meta name=\"{$q}\" content=\"{$w}\" />";
+			return substr($stringMeta, 2);
 		}
 
 		private function parseCSS() {
 			$stringCSS = "";
 			foreach ($this->style as $q => $w)
-				$stringCSS .= "\n<link rel=\"stylesheet\" href=\"/css/{$w}.css\" />";
-			return substr($stringCSS, 1);
+				$stringCSS .= "\n\t<link rel=\"stylesheet\" href=\"/css/{$w}.css\" />";
+			return substr($stringCSS, 2);
 		}
 
 		private function parseJS() {
 			$stringJS = "";
-			foreach ($this->style as $q => $w)
-				$stringJS .= "\n<script src=\"/js/{$w}.js\"></script>";
-			return substr($stringJS, 1);
+			foreach ($this->script as $q => $w)
+				$stringJS .= "\n\t<script src=\"/js/{$w}.js\"></script>";
+			return substr($stringJS, 2);
 		}
 	}

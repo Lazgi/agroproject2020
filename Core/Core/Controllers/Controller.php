@@ -20,6 +20,5 @@
 			return new PageController([
 				"charset" => "UTF-8"
 			], [$request->filename], [$request->filename], "Ready Page", $page);
-
 		}
 	}
