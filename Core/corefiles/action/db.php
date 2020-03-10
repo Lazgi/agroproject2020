@@ -1,5 +1,7 @@
 <?php
 
+// https://websitebeaver.com/php-pdo-prepared-statements-to-prevent-sql-injection
+
 	header("Content-Type: application/json");
 	require realpath(__DIR__ . '/../../core.php');
 	use MDReal\Agro\DataBase\DBConnect;
