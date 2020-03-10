@@ -13,8 +13,12 @@
 	], "Test");
 	$y = $x->Table(1);
 	$y->uname = "xxxx";
-	$y->changedid = "xx";
-	$y->store();
-	print_r($y);
+	$y->data = "xcxcax";
+	$y->priller = "PR";
+	// $y->store(); // Creates Table and Adds new Items
+	// $y->update("id", 2); // Update this item. WIP
+	// $y->delete("id", 2); // Deletes Selected Item. WIP
+	// $y->truncate(); // Empty Table
+	// $y->drop(); // DROP Table
 
 	return;
