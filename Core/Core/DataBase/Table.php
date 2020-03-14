@@ -16,7 +16,7 @@
 			self::$database = $database;
 			$this->query = "";
 			if (!in_array($this->table, $this->normalizeArray(self::$database->fetch("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{$this->table}'"))))
-				$this->query = "CREATE TABLE IF NOT EXISTS `{$this->table}` (`id` INT(11) PRIMARY KEY AUTO_INCREMENT) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1;";
+				$this->query = "CREATE TABLE `{$this->table}` (`id` INT(11) NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`)) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;";
 		}
 
 		public function getAllKeys() {
@@ -43,8 +43,16 @@
 				$this->query .= " ALTER TABLE `{$this->table}` ADD `{$key}` VARCHAR(255) NOT NULL;";
 		}
 
-		public function init() {
-			return self::$database->queryExec($this->query);
+		public function init($fetch = false) {
+			foreach (explode(";", $this->query) as $q => $w) {
+				if (!empty($w)) {
+					if ($fetch)
+						$x[] = self::$database->fetch(trim($w));
+					else
+						$x[] = self::$database->queryExec(trim($w));
+				}
+			}
+			return $x;
 		}
 
 		private function getUserInpData() {
@@ -69,14 +77,36 @@
 			$this->init();
 		}
 
-		public function update() {}
+		private function load($key, $value) {
+			$this->query = "SELECT * FROM `{$this->table}` WHERE `{$key}` = '{$value}'";
+			return $this->init(true)['0']['0'];
+		}
 
-		public function delete() {}
+		public function update($key, $value) {
+			$rows = self::$database->tables[self::$database->Tables[$this->table]];
+			$data = array_splice($this->load($key, $value), 1);
+			$user = $this->getUserInpData();
+			$update = "UPDATE `{$this->table}` SET ";
+			foreach ($rows as $q => $w)
+				$update .= "`{$w}` = '{$user[$w]}', ";
+			$this->query = substr($update, 0, -2) . " WHERE `{$key}` = '{$value}';";
+			$this->init();
+		}
 
-		public function truncate() {}
+		public function delete($key, $value) {
+			/*DELETE FROM table_name WHERE condition*/
+			$delete = "DELETE FROM `{$this->table}` WHERE `{$key}` = '{$value}';";
+			$this->query = $delete;
+			$this->init();
+		}
 
-		public function drop($tbname) {}
+		public function truncate() {
+			$this->query = "TRUNCATE TABLE `{$this->table}`;";
+			$this->init();
+		}
 
-		public function dropall() {}
-
+		public function drop() {
+			$this->query = "DROP TABLE `{$this->table}`;";
+			$this->init();
+		}
 	}

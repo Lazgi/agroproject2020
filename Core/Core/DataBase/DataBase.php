@@ -19,7 +19,6 @@
 
 		protected function queryExec($query, $data = []) {
 			if (self::$connection->type === DBConnect::MySQL) {
-				// print_r([$query, self::$connection->connection->query($query)]);
 				return self::$connection->connection->query($query);
 			}
 			elseif (self::$connection->type === DBConnect::PDO)
